@@ -1,0 +1,133 @@
+<html>
+  <head>
+    <script src="http://3Dmol.csb.pitt.edu/build/3Dmol-min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+    
+    <style>
+    
+        .mol-container {
+          width: 100%;
+          height: 400px;
+          position: relative;
+        }
+    
+        .align-center {
+              width: 600px;
+              margin: 20px auto 10px;
+              text-align: center;
+            }
+    </style>
+    
+    
+    <script>
+    
+    
+    
+    const loadModel = function(viewerObject){
+        viewerObject.removeAllModels();
+        //let pdbUri = 'https://files.rcsb.org/download/' + document.getElementById("myInput").value + '.pdb';
+       
+        
+        let pdbUri='5DB2.pdb'
+        
+        jQuery.ajax( pdbUri, { 
+            success: function(data) {
+              viewerObject.addModel( data, "pdb" );                       /* load data */
+              
+            },
+            error: function(hdr, status, err) {
+              console.error( "Failed to load PDB " + pdbUri + ": " + err );
+            },
+      });
+    
+    }
+    
+    jQuery.fn.showAsSticks = function(v){
+        
+        v.setStyle({stick:{radius:0.15}});  /* style all atoms */
+        v.zoomTo();                                      /* set camera */
+        v.render();                                      /* render scene */
+        v.zoom(1.2, 1000);
+    };
+    
+    
+    jQuery.fn.justPrintHello = function() {
+        console.log('Hello')
+    };
+    
+    
+    jQuery(function() {
+    
+    
+    
+      let element = $('#container-01');
+      let config = { defaultcolors: $3Dmol.rasmolElementColors, backgroundColor: 'white' };
+      let viewer = $3Dmol.createViewer( element, config );
+       
+      //$('#btn-02').on('click', loadModel(viewer));
+      
+      $('#btn-02').on('click', function() {
+        
+        viewer.removeAllModels();
+        let pdbUri = 'https://files.rcsb.org/download/' + document.getElementById("myInput").value + '.pdb';
+       
+        
+        jQuery.ajax( pdbUri, { 
+        success: function(data) {
+          
+          viewer.addModel( data, "pdb" );
+          viewer.setStyle({}, {cartoon: {color: 'spectrum'}});  /* style all atoms */
+            viewer.zoomTo();                                      /* set camera */
+            viewer.render();                                      /* render scene */
+            viewer.zoom(1.2, 1000);                         /* load data */
+          
+        },
+        error: function(hdr, status, err) {
+          console.error( "Failed to load PDB " + pdbUri + ": " + err );
+        },
+      });   
+    });
+     
+      
+
+    
+        $('#btn-03').on('click', function(){
+            $.fn.showAsSticks(viewer)
+        });
+      
+ });
+
+    
+    </script>
+    
+    
+    
+    
+    
+  </head>
+  
+  
+  <body>
+  
+  
+  
+  
+  
+    
+    <div class="align-center">
+      <input type="text" placeholder="Enter PDB Code" id="myInput">
+    <button id = "btn-02" class="btn btn-primary">Load PDB File</button>
+    <button id = "btn-03" class="btn btn-primary">Show as sticks</button>
+    </div>
+    
+    <div class="align-center">  
+      <div id="container-01" class="mol-container"></div>
+        
+
+    </div>
+    
+  </body>
+  
+  
+</html>
+
