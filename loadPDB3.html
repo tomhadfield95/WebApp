@@ -21,33 +21,120 @@
     
     <script>
     
-    
-    
-    const loadModel = function(viewerObject){
-        viewerObject.removeAllModels();
-        //let pdbUri = 'https://files.rcsb.org/download/' + document.getElementById("myInput").value + '.pdb';
-       
         
-        let pdbUri='5DB2.pdb'
+    jQuery.fn.fromPDBId = function(v, pdbCode){
+        v.removeAllModels();
+        let pdbUri = 'https://files.rcsb.org/download/' + pdbCode + '.pdb';
         
         jQuery.ajax( pdbUri, { 
-            success: function(data) {
-              viewerObject.addModel( data, "pdb" );                       /* load data */
+                success: function(data) {
+                      v.addModel( data, "pdb" );                       /* load data */
               
-            },
-            error: function(hdr, status, err) {
-              console.error( "Failed to load PDB " + pdbUri + ": " + err );
-            },
-      });
+                },
+                error: function(hdr, status, err) {
+                      console.error( "Failed to load PDB " + pdbUri + ": " + err );
+                },
+        });
+        
+        console.log('Hello')
+        v.setStyle({}, {cartoon: {color: 'spectrum'}});  /* style all atoms */
+        v.zoomTo();                                      /* set camera */
+        v.render();                                      /* render scene */
+        v.zoom(1.2, 1000);                               /* slight zoom */
+        console.log('Hello')
+    }
+    
+    
+    
+    jQuery.fn.fromPDBId_promise = function(v, pdbCode) {
+    
+        return new Promise((resolve, reject) => {
+            v.removeAllModels();
+            let pdbUri = 'https://files.rcsb.org/download/' + pdbCode + '.pdb';
+        
+            jQuery.ajax( pdbUri, { 
+                success: function(data) {
+                      v.addModel( data, "pdb" );                       /* load data */
+              
+                },
+                error: function(hdr, status, err) {
+                      console.error( "Failed to load PDB " + pdbUri + ": " + err );
+                },
+            });
+        
+
+        
+        })
     
     }
     
-    jQuery.fn.showAsSticks = function(v){
-        
-        v.setStyle({stick:{radius:0.15}});  /* style all atoms */
+    
+    jQuery.fn.fromPDBId_promise_2 =function(v, pdbCode) {
+    
+        const promiseUpdateEmailExist = new Promise(function (resolve, reject) {
+            
+            v.removeAllModels();
+            let pdbUri = 'https://files.rcsb.org/download/' + pdbCode + '.pdb';
+            
+            jQuery.ajax( pdbUri, { 
+                success: function(data) {
+                      v.addModel( data, "pdb" );                       /* load data */
+                      console.log("successfully loaded");
+              
+                },
+                error: function(hdr, status, err) {
+                      console.error( "Failed to load PDB " + pdbUri + ": " + err );
+                },
+            });
+            resolve(v)  
+        });
+
+        console.log(promiseUpdateEmailExist)
+
+        promiseUpdateEmailExist.then((v) => {
+            console.log('Here')
+            $.fn.showAsCartoon(v)
+            console.log(v)
+            v.setStyle({}, {cartoon: {color: 'spectrum'}});  /* style all atoms */
+            v.zoomTo();                                      /* set camera */
+            v.render();                                      /* render scene */
+            v.zoom(1.2, 1000);                               /* slight zoom */
+            
+            $("#para").toggle()
+            
+        }).catch(function (error) {
+           console.log(error)
+        });
+    }
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+     
+    jQuery.fn.showAsCartoon = function(v){
+       
+        v.setStyle({}, {cartoon: {color: 'spectrum'}});  /* style all atoms */
         v.zoomTo();                                      /* set camera */
         v.render();                                      /* render scene */
         v.zoom(1.2, 1000);
+        
+       
+    };
+     
+    jQuery.fn.showAsSticks = function(v){
+        
+        v.setStyle({stick:{radius:0.15}});               /* style all atoms */
+        v.zoomTo();                                      /* set camera */
+        v.render();                                      /* render scene */
+        v.zoom(1.2, 1000);
+        
     };
     
     
@@ -57,45 +144,29 @@
     
     
     jQuery(function() {
-    
-    
-    
-      let element = $('#container-01');
-      let config = { defaultcolors: $3Dmol.rasmolElementColors, backgroundColor: 'white' };
-      let viewer = $3Dmol.createViewer( element, config );
-       
-      //$('#btn-02').on('click', loadModel(viewer));
-      
-      $('#btn-02').on('click', function() {
+
+        let element = $('#container-01');
+        let config = { defaultcolors: $3Dmol.rasmolElementColors, backgroundColor: 'white' };
+        let viewer = $3Dmol.createViewer( element, config );
+             
+        $('#btn-02').on('click', function() { 
         
-        viewer.removeAllModels();
-        let pdbUri = 'https://files.rcsb.org/download/' + document.getElementById("myInput").value + '.pdb';
-       
-        
-        jQuery.ajax( pdbUri, { 
-        success: function(data) {
-          
-          viewer.addModel( data, "pdb" );
-          viewer.setStyle({}, {cartoon: {color: 'spectrum'}});  /* style all atoms */
-            viewer.zoomTo();                                      /* set camera */
-            viewer.render();                                      /* render scene */
-            viewer.zoom(1.2, 1000);                         /* load data */
-          
-        },
-        error: function(hdr, status, err) {
-          console.error( "Failed to load PDB " + pdbUri + ": " + err );
-        },
-      });   
-    });
+            $.fn.fromPDBId_promise_2(viewer, document.getElementById("myInput").value)
+    
+            
+              
+        });
      
       
 
     
         $('#btn-03').on('click', function(){
-            $.fn.showAsSticks(viewer)
+            
+            $.fn.showAsCartoon(viewer)
+        
         });
       
- });
+    });
 
     
     </script>
@@ -122,6 +193,7 @@
     
     <div class="align-center">  
       <div id="container-01" class="mol-container"></div>
+      <p id="para">Hello<p>
         
 
     </div>

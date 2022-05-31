@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+  <meta charset="UTF-8">
+  <script src="https://code.jquery.com/jquery-3.2.1.js"></script>
+  <script src="http://3Dmol.csb.pitt.edu/build/3Dmol-min.js"></script>
+
+  <style>
+    .mol-container {
+      width: 60%;
+      height: 400px;
+      position: relative;
+      
+      .align-center {
+              width: 600px;
+              margin: 20px auto 10px;
+              text-align: center;
+            }
+            
+     .hidden {
+                display: none !important;
+            }
+</style>
+
+  
+  
+  <script type="text/javascript" src="../static/app.js"></script>
+   
+    <script>
+    
+    </script>
+   
+   
+  
+  <title>File Uploader</title>
+</head>
+<body> 
+   <form enctype = "multipart/form-data" onsubmit="return false;" >
+   	<input id="file" type="file" name="static_file" />
+   	<button id="upload-button" onclick="uploadFile(this.form)"> Upload </button>
+   	<button id="display-button" onclick="displayMol('numbered_mol', 'file')"> Display numbered molecule </button>
+   	<button id="display_protein" onclick="display3DMol()">Display 3D mol </button>
+   </form>
+
+
+   <div id="static_file_response"></div>
+     
+    <div class="align-center">
+       <div><img id="numbered_mol" class="img" src=""></div>
+          <input type="text" placeholder="Select atom index" id="select_index" class="hidden">
+
+   </div>
+   
+   
+   <div class="align-center">
+       <div id="mol_3d" class="mol-container"></div>
+       <button id="reset_image" onclick="display3DMol()">Reset Image</button>
+       <button id="save_coords" onclick="printSavedCoords()">Save selected coords</button>
+       <button id="write_coords">Write string to file (maybe)</button>
+       <div id="data"></div> 
+
+   </div> 
+
+    
+
+
+
+</body>
+
+</html>
