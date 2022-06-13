@@ -1,71 +1,336 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-
-  <meta charset="UTF-8">
-  <script src="https://code.jquery.com/jquery-3.2.1.js"></script>
-  <script src="http://3Dmol.csb.pitt.edu/build/3Dmol-min.js"></script>
-
-  <style>
-    .mol-container {
-      width: 60%;
-      height: 400px;
-      position: relative;
-      
-      .align-center {
-              width: 600px;
-              margin: 20px auto 10px;
-              text-align: center;
+<!DOCTYPE HTML>
+<!--
+	Massively by HTML5 UP
+	html5up.net | @ajlkn
+	Free for personal and commercial use under the CCA 3.0 license (html5up.net/license)
+-->
+<html>
+	<head>
+		<title>DEVELOP</title>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+		
+		<link rel="stylesheet" href="../static/assets/css/main.css" />
+		<noscript><link rel="stylesheet" href="assets/css/noscript.css" /></noscript>
+		
+		<script src="https://code.jquery.com/jquery-3.2.1.js"></script>
+        <script src="http://3Dmol.csb.pitt.edu/build/3Dmol-min.js"></script>
+        <script type="text/javascript" src="../static/app.js"></script>
+	
+		
+		<style>
+    		.mol-container {
+                width: 100%;
+                height: 400px;
+                position: relative;
+              }
+        
+        
+            .align-center {
+                width: 600px;
+                margin: 20px auto 10px;
+                text-align: center;
             }
+             
+            .hidden {
+                display: none;
+            }  
             
-     .hidden {
-                display: none !important;
+                
+    		.box {
+                border: 3px solid;
             }
-</style>
+		
+		</style>
+		
+		
+	</head>
+	<body class="is-preload">
 
-  
-  
-  <script type="text/javascript" src="../static/app.js"></script>
-   
-    <script>
-    
-    </script>
-   
-   
-  
-  <title>File Uploader</title>
-</head>
-<body> 
-   <form enctype = "multipart/form-data" onsubmit="return false;" >
-   	<input id="file" type="file" name="static_file" />
-   	<button id="upload-button" onclick="uploadFile(this.form)"> Upload </button>
-   	<button id="display-button" onclick="displayMol('numbered_mol', 'file')"> Display numbered molecule </button>
-   	<button id="display_protein" onclick="display3DMol()">Display 3D mol </button>
-   </form>
+		<!-- Wrapper -->
+			<div id="wrapper" class="fade-in">
 
+				<!-- Intro -->
+					<div id="intro">
+						<h1>DEVELOP</h1>
+						<p>An open-source tool for fragment linking and elaboration, developed by the Oxford Protein Informatics Group</p>
+						<ul class="actions">
+							<li><a href="#header" class="button icon solid solo fa-arrow-down scrolly">Continue</a></li>
+						</ul>
+					</div>
 
-   <div id="static_file_response"></div>
+				<!-- Header -->
+					<header id="header">
+						<a href="http://opig.stats.ox.ac.uk/" class="logo">OPIG</a>
+					</header>
+
+				<!-- Nav -->
+					<nav id="nav">
+						<ul class="links">
+							<li class="active"><a href="index.html">DeLinker</a></li>
+							<li><a href="generic.html">DEVELOP-Linking</a></li>
+							<li><a href="elements.html">DEVELOP-Elaboration</a></li>
+						</ul>
+						<ul class="icons">
+							<li><a href="https://twitter.com/OPIGlets?" class="icon brands fa-twitter"><span class="label">Twitter</span></a></li>
+							<li><a href="https://github.com/oxpig/DEVELOP" class="icon brands fa-github"><span class="label">GitHub</span></a></li>
+						</ul>
+					</nav>
+
+				<!-- Main -->
+					<div id="main">
+
+						<!-- Featured Post -->
+							<article class="post featured">
+							
+							
+    							<div class="box">
+    							
+            							<div>
+                							<header class="major">
+            									<h3>Get started by uploading a ligand *.sdf file!</h3>
+                							</header>
+            							</div>
+            							
+            							<div>
+                							<form enctype = "multipart/form-data" onsubmit="return false;" >
+                							<input id="file" type="file" name="static_file" />
+                                       	<button id="upload-button" onclick="uploadFile(this.form)"> Upload Ligand</button>
+                                       	
+                                       	<button id="display_protein" onclick="display3DMol()">Display 3D molecule </button>
+                							</form>
+                							                    						
+            							</div>
+
+                                    <div id="static_file_response"></div>
+							
+    							</div>
+							
+    						
+                               
+                               
+                                <!--
+                                							
+								<header class="major">
+									<h3>Get started by uploading a ligand *.sdf file!</h3>
+								</header>
+								
+								<form enctype = "multipart/form-data" onsubmit="return false;" >
+                               	<input id="file" type="file" name="static_file" />
+                               	<button id="upload-button" onclick="uploadFile(this.form)"> Upload Ligand</button>
+                               	
+                               	<button id="display-button" onclick="displayMol('numbered_mol', 'file')"> Display numbered molecule </button>
+                               	
+                               	<button id="display_protein" onclick="display3DMol()">Display 3D molecule </button>
+                                </form>
+								
+								<div id="static_file_response"></div>
+                                 
+                                 -->
+                                 
      
-    <div class="align-center">
-       <div><img id="numbered_mol" class="img" src=""></div>
-          <input type="text" placeholder="Select atom index" id="select_index" class="hidden">
+     
+     
+                                <!--
+                                <div class="align-center">
+                                   <div><img id="numbered_mol" class="img" src=""></div>
+                                      <input type="text" placeholder="Select atom index" id="select_index" class="hidden">
+                            
+                               </div>
+                               -->
+                               
+                               
+                               <div class="box">
+                               
+                                    <div>
+                							<header class="major">
+            									<h3>3D Molecule Viewer</h3>
+            									<p>Powered by <a href="https://3dmol.csb.pitt.edu/">3Dmol.js</a></p>
+                    							<p id="instructions">To view your starting ligand: Select the file, upload it and click "Display 3D Molecule". 
+                            						When the molecule is visible, select the ligand atoms you wish to replace by clicking them. 
+                            						Once you've selected all the atoms you need, confirm your selection and then hit "generate linkers". </p> 
+                							</header>
+                							
+                							
+                    						
+            							</div>
+            							
+            							<div class="align-center">
+            							
+            							
+                                       <div id="mol_3d" class="mol-container"></div>
+                                       
+                                       
+                                       <div id="data"></div> 
+                            
+                                    </div> 
+                                    <button id="reset_image" onclick="display3DMol()">Reset Image</button>                        
+                                    <button id="save_coords">Confirm selected atoms</button>
+                                    <button id="check_input">Check Input</button>
+                                    <button id="generate_elabs">Generate Linkers</button>
 
-   </div>
-   
-   
-   <div class="align-center">
-       <div id="mol_3d" class="mol-container"></div>
-       <button id="reset_image" onclick="display3DMol()">Reset Image</button>
-       <button id="save_coords" onclick="printSavedCoords()">Save selected coords</button>
-       <button id="write_coords">Write string to file (maybe)</button>
-       <div id="data"></div> 
-
-   </div> 
-
+                               </div>
+                               
+                               
+                               
+                             <!--  
+                               
+                               <div class="align-center">
+                                   <div id="mol_3d" class="mol-container"></div>
+                                   <button id="reset_image" onclick="display3DMol()">Reset Image</button>
+                                   
+                        
+                                   <button id="save_coords">Confirm selected atoms</button>
+                                
+                                   <button id="check_input">Check Input</button>
+                                   <button id="generate_elabs">Generate Elaborations</button>
+                                   <div id="data"></div> 
+                            
+                               </div> 
+							-->
+							
+								
+							<div class="box">
+    							
+            						<header class="major">
+        								<h3>DeLinker Output</h3>           									
+            						</header>
+    						
     
+    
+                                <div id="text_generating", style="display:none">
+                                    <p style="text-align:center">Generating linkers now!
+                                </div>
+                				
+    						
+            						<div id="finished_generating", style="display:none">
+    						
+            				            <button id="display-button" onclick="displayLinkedMols('linked_mols', 'file')"> Display generated linkers</button>            				
+                        				<button id="download-button"> Download CSV File</button>
+                        				
+                                </div>           				
+        				
+                                <div><img id="linked_mols" class="img" src=""></div>
+                               
+							</div>
+							
+    						
+                             
+
+								
+								<!--
+								<a href="#" class="image main"><img src="../static/images/pic01.jpg" alt="" /></a>
+								<ul class="actions special">
+									<li><a href="#" class="button large">Full Story</a></li>
+								</ul>
+								
+								-->
+							</article>
+
+						<!-- Posts -->
+    						<!--
+							<section class="posts">
+								<article>
+									<header>
+										<span class="date">April 24, 2017</span>
+										<h2><a href="#">Sed magna<br />
+										ipsum faucibus</a></h2>
+									</header>
+									<a href="#" class="image fit"><img src="../static/images/pic02.jpg" alt="" /></a>
+									<p>Donec eget ex magna. Interdum et malesuada fames ac ante ipsum primis in faucibus. Pellentesque venenatis dolor imperdiet dolor mattis sagittis magna etiam.</p>
+									<ul class="actions special">
+										<li><a href="#" class="button">Full Story</a></li>
+									</ul>
+								</article>
+								<article>
+									<header>
+										<span class="date">April 22, 2017</span>
+										<h2><a href="#">Primis eget<br />
+										imperdiet lorem</a></h2>
+									</header>
+									<a href="#" class="image fit"><img src="../static/images/pic03.jpg" alt="" /></a>
+									<p>Donec eget ex magna. Interdum et malesuada fames ac ante ipsum primis in faucibus. Pellentesque venenatis dolor imperdiet dolor mattis sagittis magna etiam.</p>
+									<ul class="actions special">
+										<li><a href="#" class="button">Full Story</a></li>
+									</ul>
+								</article>
+								<article>
+									<header>
+										<span class="date">April 18, 2017</span>
+										<h2><a href="#">Ante mattis<br />
+										interdum dolor</a></h2>
+									</header>
+									<a href="#" class="image fit"><img src="../static/images/pic04.jpg" alt="" /></a>
+									<p>Donec eget ex magna. Interdum et malesuada fames ac ante ipsum primis in faucibus. Pellentesque venenatis dolor imperdiet dolor mattis sagittis magna etiam.</p>
+									<ul class="actions special">
+										<li><a href="#" class="button">Full Story</a></li>
+									</ul>
+								</article>
+								<article>
+									<header>
+										<span class="date">April 14, 2017</span>
+										<h2><a href="#">Tempus sed<br />
+										nulla imperdiet</a></h2>
+									</header>
+									<a href="#" class="image fit"><img src="../static/images/pic05.jpg" alt="" /></a>
+									<p>Donec eget ex magna. Interdum et malesuada fames ac ante ipsum primis in faucibus. Pellentesque venenatis dolor imperdiet dolor mattis sagittis magna etiam.</p>
+									<ul class="actions special">
+										<li><a href="#" class="button">Full Story</a></li>
+									</ul>
+								</article>
+								<article>
+									<header>
+										<span class="date">April 11, 2017</span>
+										<h2><a href="#">Odio magna<br />
+										sed consectetur</a></h2>
+									</header>
+									<a href="#" class="image fit"><img src="../static/images/pic06.jpg" alt="" /></a>
+									<p>Donec eget ex magna. Interdum et malesuada fames ac ante ipsum primis in faucibus. Pellentesque venenatis dolor imperdiet dolor mattis sagittis magna etiam.</p>
+									<ul class="actions special">
+										<li><a href="#" class="button">Full Story</a></li>
+									</ul>
+								</article>
+								<article>
+									<header>
+										<span class="date">April 7, 2017</span>
+										<h2><a href="#">Augue lorem<br />
+										primis vestibulum</a></h2>
+									</header>
+									<a href="#" class="image fit"><img src="../static/images/pic07.jpg" alt="" /></a>
+									<p>Donec eget ex magna. Interdum et malesuada fames ac ante ipsum primis in faucibus. Pellentesque venenatis dolor imperdiet dolor mattis sagittis magna etiam.</p>
+									<ul class="actions special">
+										<li><a href="#" class="button">Full Story</a></li>
+									</ul>
+								</article>
+							</section>
+                        -->
+                
+                
+                
+						<!-- Footer -->
+            				
+					</div>
+
+				
 
 
+				<!-- Copyright -->
+					<div id="copyright">
+						<ul><li>&copy; Untitled</li><li>Design: <a href="https://html5up.net">HTML5 UP</a></li></ul>
+					</div>
 
-</body>
+			</div>
 
+ 
+
+		<!-- Scripts -->
+			<script src="../static/assets/js/jquery.min.js"></script>
+			<script src="../static/assets/js/jquery.scrollex.min.js"></script>
+			<script src="../static/assets/js/jquery.scrolly.min.js"></script>
+			<script src="../static/assets/js/browser.min.js"></script>
+			<script src="../static/assets/js/breakpoints.min.js"></script>
+			<script src="../static/assets/js/util.js"></script>
+			<script src="../static/assets/js/main.js"></script>
+
+	</body>
 </html>

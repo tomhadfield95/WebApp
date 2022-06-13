@@ -7,7 +7,7 @@ function uploadFile(form){
 	oReq.open("POST", "upload_static_file", true);
 	oReq.onload = function(oEvent) {
      		if (oReq.status == 200) {
-       			oOutput.innerHTML = "Successfuly uploaded ligand file!";
+       			oOutput.innerHTML = "Successfully uploaded ligand file!";
        			console.log(oReq.response)
      		} else {
        			oOutput.innerHTML = "Error occurred when trying to upload your file.<br \/>";
@@ -33,6 +33,20 @@ function displayMol(img_id, input_id){
 }
 
 
+function displayLinkedMols(img_id, input_id){
+    console.log(img_id)
+    console.log(document.body.getElementsByTagName("*"))
+    console.log(document.getElementById(input_id).files[0].name)
+    console.log("/static/" + document.getElementById(input_id).files[0].name)
+    //document.getElementById(img_id).src = "/static/imgs/" + document.getElementById(input_id).files[0].name
+    document.getElementById(img_id).src = "/static/imgs/linked_mols.svg"
+    
+    $("#select_index").removeClass('hidden')
+}
+
+
+
+
 function display3DMol(){
 
         coordStore.length = 0 //delete any existing coordinates which have been saved
@@ -43,6 +57,8 @@ function display3DMol(){
         let pdbUri = '/static/imgs/ligand.sdf';
         jQuery.ajax( pdbUri, { 
             success: function(data) {
+            
+              $("#instructions").hide();
               let v = viewer;
               v.addModel( data, "sdf" );                       /* load data */
               v.setStyle({stick:{radius:0.15}});               /* style all atoms */
@@ -50,13 +66,11 @@ function display3DMol(){
               v.setClickable({},true,function(atom,viewer,event,container) { 
                         v.addSphere({center: {x:atom.x, y:atom.y, z:atom.z}, radius: 0.5, color:'red'})
                         v.render()
-                        coordStore.push([atom.x, atom.y, atom.z])
-                        
+                        coordStore.push([atom.x, atom.y, atom.z])     
                    });
                    
                    
-             
-        
+                   
               v.zoomTo();                                      /* set camera */
               v.render();                                      /* render scene */
               v.zoom(1.2, 1000);                               /* slight zoom */
@@ -75,7 +89,7 @@ function printSavedCoords(){
 
 
 $(document).ready(function () {
-    $("#write_coords").on("click", function() {
+    $("#save_coords").on("click", function() {
         var js_data = JSON.stringify(coordStore);
         $.ajax({                        
             url: '/save_array',
@@ -85,7 +99,8 @@ $(document).ready(function () {
             data : js_data
         }).done(function(result) {
             console.log(result);
-            $("#data").html(result);
+            /*$("#data").html(result);*/
+            $("#data").html('Successfully saved coordinates!')
         }).fail(function(jqXHR, textStatus, errorThrown) {
             console.log("fail: ",textStatus, errorThrown);
         });
@@ -93,4 +108,35 @@ $(document).ready(function () {
 });
 
 
+$(document).ready(function () {
+    $("#generate_elabs").on("click", function() {
+    
+        $("#text_generating").attr("style", "display:block")
+    
+    
+        var js_data = JSON.stringify(coordStore);
+        $.ajax({                        
+            url: '/generate_linkers',
+            type : 'post',
+            contentType: 'application/json',
+            dataType : 'json',
+            data : js_data
+        }).done(function(result) {
+           
+            /*console.log(result);*/
+            /*$("#data").html(result);*/
+            $("#data").html('Successfully generated linkers!')
+             $("#text_generating").attr("style", "display:none")
+             $("#finished_generating").attr("style", "display:block")
+            
+        }).fail(function(jqXHR, textStatus, errorThrown) {
+            console.log("fail: ",textStatus, errorThrown);
+        });
+    });
+});
+
+
+  /*
+            
+            */
 
