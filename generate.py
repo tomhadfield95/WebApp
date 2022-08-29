@@ -27,6 +27,8 @@ from examples import example_utils
 
 import glob
 import pandas as pd
+import json
+import os
 
 
 
@@ -36,9 +38,41 @@ def run_DeLinker(webapp_session_dir, coords_to_replace,
                          json_out_fname = "DeLinker_test", 
                          num_elabs = 250,
                          output_smi_id = 'gen_linkers', image_fname = 'linked_mols.svg'):
+    
+    
     #Load in molecule(s)
     mols = [Chem.MolFromMolFile(x) for x in glob.glob(f'{webapp_session_dir}/ligand*.sdf')]
-    #mol = Chem.MolFromMolFile(sdf_file)
+    
+    #Load in user specified inputs
+    if not os.path.exists(f'{webapp_session_dir}/user_input.json'):
+        #i.e. the user hasn't specified any inputs:
+        if len(mols) > 1:
+            return 'Must specify a linker length if more than one fragment is provided'
+        elif len(mols) == 1:
+            num_elabs = 250
+            linker_length = coords_to_replace.shape[0]
+        
+    else:
+        #i.e. there is a user input file
+        with open(f'{webapp_session_dir}/user_input.json', 'r') as f:
+            user_input = json.load(f)
+        
+        if len(mols) > 1 and "max_linker_length" not in user_input.keys():
+            return 'Must specify a linker length if more than one fragment is provided'
+        elif len(mols) == 1 and "max_linker_length" not in user_input.keys():
+            linker_length = coords_to_replace.shape[0]
+        else:
+            linker_length = int(user_input["max_linker_length"])
+            
+        if "num_linkers" not in user_input.keys():
+            print("Assuming default number of elaborations")
+        else:
+            num_elabs = int(user_input["num_linkers"])
+        
+        
+    
+   
+    
   
     #Obtain substructure we're trying to replace via the atomic coordinates
     linker, fragments, mol_smiles, mol_out = match_coords_to_indices(mols, coords_to_replace)
@@ -49,8 +83,10 @@ def run_DeLinker(webapp_session_dir, coords_to_replace,
     model_args = process_pharmacophoric_info(mol_smiles, linker, fragments, mol_out,
                                            data_path_fname=f'{webapp_session_dir}/DeLinker_test_data.smi',
                                            json_out_fname=f'{webapp_session_dir}/molecules_DeLinker_test',
-                                           num_elabs=num_elabs,
-                                           output_smi_file=f'{webapp_session_dir}/DeLinker_{output_smi_id}.smi')
+                                           output_smi_file=f'{webapp_session_dir}/DeLinker_{output_smi_id}.smi',
+                                           len_linker=linker_length,
+                                           num_elabs=num_elabs
+                                           )
   
     #Make elabs
     generate_linkers(model_args)
@@ -73,6 +109,8 @@ def check_DeLinker_input(webapp_session_dir, coords_to_replace,
     
     #Obtain substructure we're trying to replace via the atomic coordinates
     linker, fragments, mol_smiles, mol_out = match_coords_to_indices(mols, coords_to_replace)
+    
+    print(fragments)
     
     mol_out_2d = Chem.MolFromSmiles(fragments)
     MolToFile(mol_out_2d, f'.{webapp_session_dir}/{image_fname}', size = (500, 500))
@@ -101,16 +139,8 @@ def process_pharmacophoric_info(full_smi, linker_smi, fragments_smi, original_mo
                                 data_path_fname,
                                 json_out_fname, 
                                 output_smi_file,
+                                len_linker,
                                 num_elabs = 250):
-
-    
-    if linker_smi != "":
-        
-        len_linker = Chem.MolFromSmiles(linker_smi).GetNumHeavyAtoms()
-    
-    else:
-        
-        len_linker = 6 #TODO - change so user can select from drop down menu
         
         
     dist, ang = frag_utils.compute_distance_and_angle(original_mol, linker_smi, fragments_smi)
@@ -145,7 +175,12 @@ def match_coords_to_indices(mols, coords, linking = True):
         #i.e. only a single molecule provided and 
         #the user has clicked a substructure to be removed
         
+    
+        
         mol = mols[0]
+        
+        print(Chem.MolToSmiles(mol))
+        
         remove_indices = []
         for c in coords:
     

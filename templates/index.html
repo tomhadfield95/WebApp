@@ -6,7 +6,7 @@
 -->
 <html>
 	<head>
-		<title>DEVELOP</title>
+		<title>DeLinker</title>
 		<meta charset="utf-8" />
 		<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
 		
@@ -16,8 +16,7 @@
 		<script src="https://code.jquery.com/jquery-3.2.1.js"></script>
         <script src="http://3Dmol.csb.pitt.edu/build/3Dmol-min.js"></script>
         <script type="text/javascript" src="../static/app.js"></script>
-	
-		
+		    
 		<style>
     		.mol-container {
                 width: 100%;
@@ -176,16 +175,43 @@
             							
             							
                                        <div id="mol_3d" class="mol-container"></div>
-                                       
+                    
                                        
                                        <div id="data"></div> 
+                                       
+                                       
                             
                                     </div> 
-                                    <button id="reset_image" onclick="display3DMol_2('{{ upload_folder }}')">Reset Image</button>                        
-                                    <button id="save_coords">Confirm selected atoms</button>
-                                    <button id="check_input" onclick="displayDeLinkerInput('{{ upload_folder }}', 'DeLinker_input')">Check Input</button>
-                                    <button id="generate_elabs">Generate Linkers</button>
-
+                                    
+                                    
+                                    
+                                    <div class="align_center", id="user_params_form", style="display:none">
+                                    
+                                        <button id="reset_image" onclick="display3DMol_2('{{ upload_folder }}')">Reset Image</button>                        
+                                       <button id="save_coords">Confirm selected atoms</button>
+                                    
+                                        <br>
+                                    
+                                        <header class="major">
+            									<h3>User-Specified Inputs</h3>
+                    							<p>DeLinker requires the user to specify the maximum linker length and the number of linkers they wish to be generated.
+                            					Please do so below.</p> 
+                            					
+                            					<p>For the max linker length, if you have provided a single ligand and don't specify a max linker length it will be inferred from the provided ligand.</p>
+                							</header>
+                                    
+                                    
+                                        <form name="input_form">
+                                            <p>Max Linker Length (must be a positive integer).<input type = "text" name = "max_linker_length" /></p>
+                                            <p>Specify how many linkers you wish to be generated (default: 250) <input type = "text" name = "num_linkers" /></p>
+                                            <input type = "submit" value = "submit run parameters" />
+                                            <button id="check_input" onclick="displayDeLinkerInput('{{ upload_folder }}', 'DeLinker_input')">Check Input</button>
+                                            <button id="generate_elabs">Generate Linkers</button>
+                                        </form>
+                                        
+                                          
+                                    </div>
+                                    
                                </div>
                                
                                
@@ -212,7 +238,11 @@
             								<h3>DeLinker Input</h3>           									
                 						</header>	
 							
-    							<div><img id="DeLinker_input" class="img" src=""></div>
+            							<div><img id="DeLinker_input" class="img" src=""></div>
+							
+            							<p>The two molecules in the image are the fragments that DeLinker will attempt to link.
+            							The dummy atoms (denoted by asterisks) denote the fragment exit vectors. If the molecules look strange (e.g. bond orders missing
+            							 or dummy atoms in unexpected places, it's an indication that something has gone wrong somewhere.</p>
 							
 							</div>
 							
@@ -234,7 +264,14 @@
             						<div id="finished_generating", style="display:none">
     						
             				            <button id="display-button" onclick="displayLinkedMols('{{ upload_folder }}', 'linked_mols')"> Display generated linkers</button>            				
+                        				
+                        				<!--
                         				<button id="download-button"> Download CSV File</button>
+                        				-->
+                        				<br>
+                        				
+                        				<p>You can click the button above to see some of the generated linkers,
+                        				or <a  href="{{url_for('download')}}">click here</a> to download them in SMILES format.</p>
                         				
                                 </div>           				
         				

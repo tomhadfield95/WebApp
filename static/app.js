@@ -154,7 +154,9 @@ function display3DMol_2(molDir){
             
             if (i == 0){
                 //Get rid of instructions
+                
                 $("#instructions").hide();
+                document.getElementById("user_params_form").style.display="block";
             }
             
             
@@ -239,7 +241,7 @@ $(document).ready(function () {
 });
 
 
-$(document).ready(function () {
+$(document).ready(function() {
     $("#generate_elabs").on("click", function() {
     
         $("#text_generating").attr("style", "display:block")
@@ -266,6 +268,31 @@ $(document).ready(function () {
     });
 });
 
+
+
+
+
+$(document).ready(function() {
+  // Wait for the content to load.
+  $("form[name='input_form']").submit(function(evt) {
+    // If the form is to be submitted, ignore the standard behavior.
+    evt.preventDefault();
+    // Serialize the inputs to an array.
+    let inputFields = $(this).serializeArray();
+    // Send the data as JSON via AJAX.
+    $.ajax({
+      method: "POST",
+      url: "/save_job_parameters",
+      contentType: "application/json;charset=utf-8",
+      dataType: "json",
+      data: JSON.stringify({ input_fields: inputFields })
+    }).done(data => {
+      // Use the response here.
+      console.log(data);
+    });
+  });
+});
+    
 
 
 

@@ -1,4 +1,4 @@
-from flask import Flask, request, render_template, jsonify
+from flask import Flask, request, render_template, jsonify, send_file, url_for
 from flask_cors import CORS
 from rdkit import Chem
 from rdkit.Chem import AllChem
@@ -8,6 +8,7 @@ import numpy as np
 import re
 import os
 import time
+import json
 from generate import run_DeLinker, check_DeLinker_input
 
 
@@ -67,8 +68,14 @@ def upload_multiple_static_files():
             request.files[k].save(f_out)
             
             #Make sure that the ligand doesn't have any H's
-            mol = Chem.MolFromMolFile(f_out)
+            mol = Chem.SDMolSupplier(f_out)[0]
+            
+            #mol = Chem.MolFromMolFile(f_out)
+            print(Chem.MolToMolBlock(mol))
+            
             mol = Chem.RemoveHs(mol)
+            
+            print(Chem.MolToMolBlock(mol))
             Chem.MolToMolFile(mol, f_out)
             
             out_list.append(f"ligand_{k.split('_')[-1]}.sdf")
@@ -127,7 +134,44 @@ def save_array():
     return render_template("index.html")
 
 
+'''
+@app.route('/',methods=["GET", "POST"])
+def save_job_parameters():
+    if request.method == 'POST':
+        form_data = request.form
+        
+        print(form_data)
+        
+        return jsonify(form_data)
+    return render_template("index.html")
+'''
 
+@app.route('/save_job_parameters', methods=['POST'])
+def save_job_parameters():
+  
+    print(request.json)
+    
+    if not os.path.exists('.' + app.config['UPLOAD_FOLDER']):
+        os.mkdir('.' + app.config['UPLOAD_FOLDER'])
+    
+    f_out = '.' + app.config['UPLOAD_FOLDER'] + f"/user_input.json"            
+    
+    
+    #Create config dictionary containing user specified parameters:
+    
+    config_dict = {}
+    for user_input in request.json["input_fields"]:
+        #request.json["input_fields"] is a list of dictionaries containing
+        #the user input in (key, value) format
+        config_dict[user_input["name"]] = user_input["value"]
+    
+    
+    
+    with open(f_out, 'w') as f:
+        json.dump(config_dict, f)
+
+    
+    return jsonify(msg='success')
 
 
 @app.route('/generate_linkers',methods=["GET", "POST"])
@@ -144,6 +188,15 @@ def generate_linkers():
         
         return jsonify(data)
     return render_template("index.html")
+
+
+@app.route('/download')
+def download():
+    path = f'static/WebApp_session_{run_id}/DeLinker_gen_linkers.smi'
+    return send_file(path, as_attachment=True)
+
+
+
 
 '''
 @app.route('/check_input',methods=["GET", "POST"])
